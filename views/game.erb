@@ -1,0 +1,15 @@
+<%load 'public/blackjack_oo_classes.rb'%>
+
+<h2> Welcome to the game <%= session[:username]%>.</h2>
+
+<%deck = Cards.new%>
+<%dealer = Dealer.new
+dealer.start%>
+<%player = Player.new
+player.start%>
+<%player.name = session[:username]%>
+
+<p><%= player.check_hand%></p>
+<br />
+<br />
+<p><%= dealer.cards_showing%></p>
