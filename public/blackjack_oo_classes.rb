@@ -1,14 +1,14 @@
 class Cards
   attr_accessor :cards
   
-  @@card_faces = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A']
-  @@card_suits = ['H', 'D', 'C', 'S']
+  @card_faces = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A']
+  @card_suits = ['H', 'D', 'C', 'S']
   
   def initialize (decks=1)
 	@cards = []
 	decks.to_i.times do |deck|
-	  @@card_suits.each do |suit|
-	    @@card_faces.each do |face|
+	  @card_suits.each do |suit|
+	    @card_faces.each do |face|
 	      @cards << [face, suit]
 		end
 	  end

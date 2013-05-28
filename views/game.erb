@@ -1,15 +1,26 @@
-<%load 'public/blackjack_oo_classes.rb'%>
+<h1>Blackjack!</h1>
 
 <h2> Welcome to the game <%= session[:username]%>.</h2>
 
-<%deck = Cards.new%>
-<%dealer = Dealer.new
-dealer.start%>
-<%player = Player.new
-player.start%>
-<%player.name = session[:username]%>
-
-<p><%= player.check_hand%></p>
+<h4><%= session[:username] %>: your hand is:</h4> 
+<ul>
+	<% session[:player_cards].each do |card| %>
+	<li><%= card.to_s %></li>
+	<% end %>
+</ul>
 <br />
 <br />
-<p><%= dealer.cards_showing%></p>
+<h4>The dealer's hand is:</h4> 
+<ul>
+  <li><%= session[:dealer_cards].first %>(face down)</li>
+  <% session[:dealer_cards][1..session[:dealer_cards].count].each do |card| %>
+  <li><%= card.to_s %></li>
+  <% end %>
+</ul>
+<br />
+<br />
+<br />
+<form method="post" action="/hit_stay">
+	<input name="hit" type="submit" value="Hit!">
+	<input name="stay" type="submit" vlaue="Stay!">
+</form>
