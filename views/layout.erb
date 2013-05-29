@@ -3,6 +3,7 @@
   <head>
     <title>Blackjack, baby!</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/application.css">
   </head>
   <body style="padding-top: 50px;">
 
@@ -19,6 +20,8 @@
   <div class="container">
     <%if @error %>
       <div class="alert alert-error"><%=@error%></div>
+    <%elsif @success %>
+      <div class="alert alert-success"><%=@success%></div>
     <% end %>
       <%= yield %>
   </div>

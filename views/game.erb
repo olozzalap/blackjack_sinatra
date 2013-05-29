@@ -1,26 +1,39 @@
-<h1>Blackjack!</h1>
+<h1 style="text-align:center;">Blackjack!</h1>
 
-<h2> Welcome to the game <%= session[:username]%>.</h2>
+<h2> Welcome to the game <%= session[:username]%>. Good luck!</h2>
 
-<h4><%= session[:username] %>: your hand is:</h4> 
-<ul>
-	<% session[:player_cards].each do |card| %>
-	<li><%= card.to_s %></li>
-	<% end %>
-</ul>
-<br />
-<br />
-<h4>The dealer's hand is:</h4> 
-<ul>
-  <li><%= session[:dealer_cards].first %>(face down)</li>
+
+<h4>Dealer's hand:</h4> 
+<div class="well">
+  <img class="card_display" src="/img/cards/cover.jpg">
   <% session[:dealer_cards][1..session[:dealer_cards].count].each do |card| %>
-  <li><%= card.to_s %></li>
+  <img class="card_display" src="<%= card_img_selector(card) %>">
   <% end %>
-</ul>
+</div>
+
 <br />
 <br />
+
+<h4>Your hand:</h4> 
+<div class="well">
+	<% session[:player_cards].each do |card| %>
+	<img class="card_display" src="<%= card_img_selector(card) %>">
+	<% end %>
+</div>
+
 <br />
-<form method="post" action="/hit_stay">
-	<input name="hit" type="submit" value="Hit!">
-	<input name="stay" type="submit" vlaue="Stay!">
+<br />
+
+<p>
+	Your ideal total is <%= calculate_total(session[:player_cards]) %> currently. Would you like to hit or stay?
+</p>
+<br />
+
+<% if @show_hit_and_stay_buttons %>
+<form id="hit_form" method="post" action="/game/player/hit">
+	<input name="hit" class="btn btn-success" type="submit" value="Hit!">
 </form>
+<form id="stay_form" method="post" action="/game/player/stay">
+	<input name="stay" class="btn btn-warning" type="submit" value="Stay!">
+</form>
+<% end %>

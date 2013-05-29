@@ -1,0 +1,11 @@
+form#hit_form {
+	float:left;
+	margin:8px;
+}
+form#stay_form {
+	float:left;
+	margin:8px;
+}
+img.card_display {
+	margin:12px;
+}
