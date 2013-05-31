@@ -44,25 +44,65 @@ helpers do
   
   def dealer_action?
     if calculate_total(session[:dealer_cards]) > 21
-      @dealer_bust = true
       @show_cards = true
+      session[:dealer_stay] = true
+      session[:player_stay] = true
       @success = "The dealer has busted and you win!"
+      halt erb :game
     elsif calculate_total(session[:dealer_cards]) == 21
       @show_cards = true
+      session[:dealer_stay] = true
+      session[:player_stay] = true
       @error = "Sorry the dealer has Blackjack and you lose!"
+      halt erb :game
+    elsif calculate_total(session[:dealer_cards]) > 16 && session[:player_stay] = true
+      session[:dealer_stay] = true
+      halt redirect '/game/compare'
     elsif calculate_total(session[:dealer_cards]) > 16
-      @dealer_stay = true
-      redirect '/game/compare'
+      session[:dealer_stay] = true
+      halt erb :game
     else
       @dealer_hit = true
       erb :game
     end
   end
 
+  def player_bust_or_win?
+    if calculate_total(session[:player_cards]) == 21
+      @success = "Congratulations, you have 21 and you win!"
+      session[:player_stay] = true
+      session[:dealer_stay] = true
+      @show_cards = true
+      halt erb :game
+    elsif calculate_total(session[:player_cards]) > 21
+      @error = "You have busted, the dealer wins!"
+      session[:player_stay] = true
+      session[:dealer_stay] = true
+      @show_cards = true
+      halt erb :game
+    end
+  end
+
+  def dealer_bust_or_win?
+    if calculate_total(session[:dealer_cards]) == 21
+      @error = "The dealer has blackjack, you lose..."
+      session[:player_stay] = true
+      session[:dealer_stay] = true
+      @show_cards = true
+      halt erb :game
+    elsif calculate_total(session[:player_cards]) > 21
+      @success = "You dealer has busted and you win!"
+      session[:player_stay] = true
+      session[:dealer_stay] = true
+      @show_cards = true
+      halt erb :game
+    end
+  end
+
 end
 
 before do
-  @show_hit_and_stay_buttons = true
+
 end
 
 
@@ -98,37 +138,33 @@ get '/game' do
   session[:player_cards] << session[:deck].pop
   session[:dealer_cards] << session[:deck].pop
   session[:player_cards] << session[:deck].pop
+  session[:dealer_stay] = false
+  session[:player_stay] = false
+  player_bust_or_win?
   erb :game
 end
 
 post '/game/player/hit' do
   session[:player_cards] << session[:deck].pop
-  if calculate_total(session[:player_cards]) == 21
-    @success = "Congratulations, you have 21 and you win!"
-    @show_hit_and_stay_buttons = false
-  elsif calculate_total(session[:player_cards]) > 21
-    @error = "You have busted, the dealer wins!"
-    @show_hit_and_stay_buttons = false
-  end
+  player_bust_or_win?
+  @player_hit = true
   erb :game
 end
 
 post '/game/player/stay' do
   @success = "You have chosen to stay"
-  @show_hit_and_stay_buttons = false
-  redirect '/game/dealer'
-end
-
-get '/game/dealer' do
-  @show_hit_and_stay_buttons = false
-  dealer_action?
+  session[:player_stay] = true
   erb :game
 end
 
+get '/game/dealer' do
+  dealer_action?
+end
+
 get '/game/dealer/hit' do
-  @show_hit_and_stay_buttons = false
   session[:dealer_cards] << session[:deck].pop
-  redirect '/game/dealer'
+  dealer_bust_or_win?
+  erb :game
 end
 
 get '/game/compare' do

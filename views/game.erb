@@ -34,7 +34,7 @@
 <br />
 <br />
 
-<% if @show_hit_and_stay_buttons %>
+<% if session[:player_stay] == false && @dealer_hit != true && @player_hit != true %>
 <h4>
 	Your ideal total is <%= calculate_total(session[:player_cards]) %> currently. Would you like to hit or stay?
 </h4>
@@ -45,4 +45,21 @@
 <form id="stay_form" method="post" action="/game/player/stay">
 	<input name="stay" class="btn btn-warning" type="submit" value="Stay!">
 </form>
+
+<% elsif session[:player_stay] == true && session[:dealer_stay] != true && @dealer_hit != true %>
+<h4>
+  You have <%= calculate_total(session[:player_cards]) %> and are staying. Press continue to go to the next dealer action.
+</h4>
+  <form method="get" action="/game/dealer">
+    <input type="submit" class="btn btn-primary" value="Continue!">
+  </form>
+
+<% elsif @player_hit %>
+<h4>
+  You hit and now have <%= calculate_total(session[:player_cards]) %>. Press continue below to go to the next dealer action.
+</h4>
+  <form method="get" action="/game/dealer">
+    <input type="submit" class="btn btn-primary" value="Continue!">
+  </form>
+
 <% end %>
