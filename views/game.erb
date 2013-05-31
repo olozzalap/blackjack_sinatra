@@ -5,9 +5,19 @@
 
 <h4>Dealer's hand:</h4> 
 <div class="well">
-  <img class="card_display" src="/img/cards/cover.jpg">
+  <% if @show_cards %>
+    <img class="card_display" src="<%= card_img_selector(session[:dealer_cards][0]) %>">
+  <% else %>
+    <img class="card_display" src="/img/cards/cover.jpg">
+  <% end %>
   <% session[:dealer_cards][1..session[:dealer_cards].count].each do |card| %>
   <img class="card_display" src="<%= card_img_selector(card) %>">
+  <% end %>
+  <% if @dealer_hit %>
+    <h4>The dealer has <%= calculate_total(session[:dealer_cards][1..session[:dealer_cards].count]) %> showing and chooses to hit</h4>
+    <form method="get" action="/game/dealer/hit">
+    	<input type="submit" value="Deal!" name="deal_to_dealer" class="btn btn-primary">
+    </form>
   <% end %>
 </div>
 
@@ -24,12 +34,11 @@
 <br />
 <br />
 
-<p>
-	Your ideal total is <%= calculate_total(session[:player_cards]) %> currently. Would you like to hit or stay?
-</p>
-<br />
-
 <% if @show_hit_and_stay_buttons %>
+<h4>
+	Your ideal total is <%= calculate_total(session[:player_cards]) %> currently. Would you like to hit or stay?
+</h4>
+<br />
 <form id="hit_form" method="post" action="/game/player/hit">
 	<input name="hit" class="btn btn-success" type="submit" value="Hit!">
 </form>
